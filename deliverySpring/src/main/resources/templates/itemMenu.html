@@ -4,12 +4,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Ítems del Menú</title>
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Fondo gris claro para toda la página */
+        body {
+            background-color: #f8f9fa;
+        }
+    </style>
+    <script>
+        function filtrarEnTabla() {
+            // Obtener el valor de búsqueda
+            var inputBusqueda = document.getElementById("campoBusqueda");
+            var filtro = inputBusqueda.value.toLowerCase();
+            var tabla = document.getElementById("tablaItems");
+            var filas = tabla.getElementsByTagName("tr");
+
+            // Iterar sobre todas las filas de la tabla
+            for (var i = 1; i < filas.length; i++) { // Empieza desde 1 para omitir el encabezado
+                var celdas = filas[i].getElementsByTagName("td");
+                var encontrado = false;
+
+                // Recorre todas las celdas de la fila
+                for (var j = 0; j < celdas.length; j++) {
+                    if (celdas[j].textContent.toLowerCase().indexOf(filtro) > -1) {
+                        encontrado = true;
+                        break;
+                    }
+                }
+
+                // Muestra u oculta la fila dependiendo si coincide con la búsqueda
+                if (encontrado) {
+                    filas[i].style.display = "";
+                } else {
+                    filas[i].style.display = "none";
+                }
+            }
+        }
+    </script>
 </head>
 <body>
 <div class="container mt-5">
     <h1 class="mb-4 text-center">Lista de Ítems del Menú</h1>
-    <table class="table table-bordered table-striped mt-4 text-center table-hover">
+
+    <!-- Contenedor para el campo de búsqueda alineado a la izquierda -->
+    <div class="row mb-4">
+        <div class="col-6 text-start">
+            <input type="text" id="campoBusqueda" onkeyup="filtrarEnTabla()" class="form-control" placeholder="Buscar por ID, Nombre, Descripción...">
+        </div>
+    </div>
+
+    <table id="tablaItems" class="table table-bordered table-striped mt-4 text-center table-hover">
         <thead class="table-dark">
         <tr>
             <th class="align-middle">ID</th>
@@ -42,6 +87,7 @@
         </tbody>
     </table>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

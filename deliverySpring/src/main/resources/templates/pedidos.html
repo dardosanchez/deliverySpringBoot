@@ -5,14 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lista de Pedidos</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Fondo grisecito */
+    body {
+      background-color: #f8f9fa;
+    }
+    /* Estilo para el campo de búsqueda */
+    #filtro {
+      margin-bottom: 15px;
+      width: 250px;
+    }
+  </style>
 </head>
 <body>
 <div class="container mt-5">
   <h1 class="text-center">Lista de Pedidos</h1>
 
+  <!-- Campo de filtro -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <input id="filtro" type="text" class="form-control" placeholder="Filtrar por cualquier campo">
+    </div>
+  </div>
+
   <div class="row">
     <div class="col-12">
-      <table class="table table-striped table-hover text-center">
+      <table class="table table-striped table-hover text-center" id="tablaPedidos">
         <thead class="table-dark">
         <tr>
           <th>ID</th>
@@ -39,7 +57,6 @@
                     th:onclick="'verDetalles(' + ${pedido.id} + ')'"
                     data-bs-toggle="modal"
                     data-bs-target="#detalleModal">Ver Detalles</button>
-
           </td>
         </tr>
         </tbody>
@@ -91,7 +108,27 @@
 <!-- Script de Bootstrap y Funcionalidad -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  function verDetalles(pedidoId) {
+  // Función para filtrar la tabla según el texto del input
+  document.getElementById('filtro').addEventListener('input', function() {
+    let filtro = this.value.toLowerCase();
+    let filas = document.querySelectorAll('#tablaPedidos tbody tr');
+
+    filas.forEach(function(fila) {
+      let celdas = fila.querySelectorAll('td');
+      let textoFila = '';
+      celdas.forEach(function(celda) {
+        textoFila += celda.textContent.toLowerCase();
+      });
+
+      if (textoFila.indexOf(filtro) > -1) {
+        fila.style.display = '';
+      } else {
+        fila.style.display = 'none';
+      }
+    });
+  });
+
+  function verDetalles(idPedido) {
     // Limpia los contenidos del modal antes de cargar nuevos datos
     document.getElementById('detalleId').textContent = '';
     document.getElementById('detalleEstado').textContent = '';
@@ -101,17 +138,9 @@
     document.getElementById('detalleVendedor').textContent = '';
     document.getElementById('detalleProductos').innerHTML = ''; // Limpia la tabla de productos
 
-    fetch(`/pedidos/${pedidoId}`)
-            .then(response => {
-              if (!response.ok) {
-                throw new Error(`Error en la solicitud: ${response.status}`);
-              }
-              return response.json();
-            })
+    fetch(`/pedidos/${idPedido}`)
+            .then(response => response.json())
             .then(data => {
-              console.log('Datos recibidos:', data); // Mostrar los datos en la consola
-
-              // Actualiza los datos en el modal
               document.getElementById('detalleId').textContent = data.id;
               document.getElementById('detalleEstado').textContent = data.estado;
               document.getElementById('detalleTotal').textContent = `$${data.total.toFixed(2)}`;
@@ -122,16 +151,16 @@
               const productosList = document.getElementById('detalleProductos');
               data.pedidoDetalles.forEach(detalle => {
                 const subtotal = detalle.itemMenu.precio * detalle.cantidad;
-                const row = `
-          <tr>
-            <td>${detalle.itemMenu.nombre}</td>
-            <td>${detalle.itemMenu.descripcion}</td>
-            <td>$${detalle.itemMenu.precio.toFixed(2)}</td>
-            <td>${detalle.cantidad}</td>
-            <td>$${subtotal.toFixed(2)}</td>
-          </tr>
-        `;
-                productosList.insertAdjacentHTML('beforeend', row);
+                const fila = `
+            <tr>
+              <td>${detalle.itemMenu.nombre}</td>
+              <td>${detalle.itemMenu.descripcion}</td>
+              <td>$${detalle.itemMenu.precio.toFixed(2)}</td>
+              <td>${detalle.cantidad}</td>
+              <td>$${subtotal.toFixed(2)}</td>
+            </tr>
+          `;
+                productosList.insertAdjacentHTML('beforeend', fila);
               });
             })
             .catch(error => console.error('Error al obtener los detalles:', error));
@@ -139,3 +168,4 @@
 </script>
 </body>
 </html>
+
