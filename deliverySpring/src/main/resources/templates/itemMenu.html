@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Ítems del Menú</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="mb-4 text-center">Lista de Ítems del Menú</h1>
+    <table class="table table-bordered table-striped mt-4 text-center table-hover">
+        <thead class="table-dark">
+        <tr>
+            <th class="align-middle">ID</th>
+            <th class="align-middle">Nombre</th>
+            <th class="align-middle">Descripción</th>
+            <th class="align-middle">Precio</th>
+            <th class="align-middle">Peso</th>
+            <th class="align-middle">Calorías</th>
+            <th class="align-middle">Apto Celíaco</th>
+            <th class="align-middle">Apto Vegano</th>
+            <th class="align-middle">Graduación Alcohol</th>
+            <th class="align-middle">Volumen</th>
+            <th class="align-middle">Vendedor</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${items}">
+            <td class="align-middle" th:text="${item.id}"></td>
+            <td class="align-middle" th:text="${item.nombre}"></td>
+            <td class="align-middle" th:text="${item.descripcion}"></td>
+            <td class="align-middle" th:text="'$' + ${item.precio}"></td>
+            <td class="align-middle" th:text="${item.peso}"></td>
+            <td class="align-middle" th:text="${item.calorias != null ? item.calorias : 'No'}"></td>
+            <td class="align-middle" th:text="${item.aptoCeliaco != null ? (item.aptoCeliaco ? 'Sí' : 'No') : 'No'}"></td>
+            <td class="align-middle" th:text="${item.aptoVegano != null ? (item.aptoVegano ? 'Sí' : 'No') : 'No'}"></td>
+            <td class="align-middle" th:text="${item.graduacionAlcohol != null ? item.graduacionAlcohol : 'No'}"></td>
+            <td class="align-middle" th:text="${item.volumen != null ? item.volumen : 'No'}"></td>
+            <td class="align-middle" th:text="${item.vendedor != null ? item.vendedor.nombre : 'N/A'}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
